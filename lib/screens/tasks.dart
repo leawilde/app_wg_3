@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:app_wg_3/task.dart';
 
 class Tasks extends StatefulWidget {
   const Tasks({Key? key}) : super(key: key);
@@ -10,6 +11,15 @@ class Tasks extends StatefulWidget {
 class _TasksState extends State<Tasks> {
 
   int _points = 69;
+  List<Task> tasks = [
+    Task(description: 'Bad putzen', points: 20),
+    Task(description: 'Küche putzen', points: 20),
+    Task(description: 'Flur putzen', points: 10),
+    Task(description: 'Müll rausbringen', points: 5),
+    Task(description: 'Boden wischen', points: 10),
+    Task(description: 'WG Einkauf', points: 5),
+  ];
+
 
   @override
   Widget build(BuildContext context) {
