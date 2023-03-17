@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:app_wg_3/task.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Tasks extends StatefulWidget {
   const Tasks({Key? key}) : super(key: key);
@@ -10,7 +11,7 @@ class Tasks extends StatefulWidget {
 
 class _TasksState extends State<Tasks> {
 
-  int _points = 69;
+  int _points = 0;
   List<Task> tasks = [
     Task(description: 'Bad putzen', points: 20),
     Task(description: 'Küche putzen', points: 20),
@@ -20,42 +21,59 @@ class _TasksState extends State<Tasks> {
     Task(description: 'WG Einkauf', points: 5),
   ];
 
+  @override
+  void dispose() {
+    _loadPoints();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
+
+    _loadPoints();
+
+    return Scaffold(
       backgroundColor: Colors.red[200],
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+      body: ListView(
+        //mainAxisAlignment: MainAxisAlignment.start,
+        //crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           Container(
               margin: EdgeInsets.fromLTRB(50, 50, 50, 20),
-          padding: EdgeInsets.all(10),
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            color: Colors.black,
-            borderRadius: BorderRadius.circular(20)
+              padding: EdgeInsets.all(10),
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                  color: Colors.black,
+                  borderRadius: BorderRadius.circular(20)
+              ),
+              child: Text('Tasks', style: TextStyle(color: Colors.white),)
           ),
-          child: Text('Tasks', style: TextStyle(color: Colors.white),)
-          ),
-          ElevatedButton(onPressed: () { updatePoints(10);}, child: Text('Tasks Done')),
+          ElevatedButton(onPressed: () {
+            updatePoints(10);
+          }, child: Text('Tasks Done')),
           Container(
             margin: EdgeInsets.fromLTRB(50, 20, 50, 20),
             padding: EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: Colors.black,
-              borderRadius: BorderRadius.circular(20)
+                color: Colors.black,
+                borderRadius: BorderRadius.circular(20)
             ),
             child: Column(
               children: <Widget>[
-                Text('Congrats you have got', style: TextStyle(color: Colors.white,),),
+                Text('Congrats you have got',
+                  style: TextStyle(color: Colors.white,),),
                 Text('$_points Points', style: TextStyle(color: Colors.white),)
               ],
             ),
-          )
+          ),
+          taskCard(tasks[1]),
+          taskCard(tasks[2]),
+          taskCard(tasks[3]),
+          taskCard(tasks[4]),
+          taskCard(tasks[5]),
         ],
       ),
+      bottomNavigationBar: BottomAppBar(),
     );
   }
 
@@ -64,5 +82,40 @@ class _TasksState extends State<Tasks> {
       _points += points;
     });
   }
+
+  Widget taskCard(Task task) {
+    return InkWell(
+      onTap: () {
+        setState(() {
+          _points += task.points;
+        });
+      },
+      child: Card(
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20)
+        ),
+        margin: EdgeInsets.fromLTRB(16, 16, 16, 16),
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(12),
+            child: Text('${task.description} - ${task.points}'),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _savePoints() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('counter', _points);
+  }
+
+  Future<void> _loadPoints() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _points = prefs.getInt('counter') ?? 0;
+    });
+  }
+
 
 }
