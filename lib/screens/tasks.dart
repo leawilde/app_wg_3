@@ -88,6 +88,7 @@ class _TasksState extends State<Tasks> {
       onTap: () {
         setState(() {
           _points += task.points;
+          _savePoints();
         });
       },
       child: Card(
