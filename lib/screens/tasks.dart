@@ -1,3 +1,4 @@
+import 'package:app_wg_3/screens/tasksDone.dart';
 import 'package:flutter/material.dart';
 import 'package:app_wg_3/task.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -49,7 +50,8 @@ class _TasksState extends State<Tasks> {
               child: Text('Tasks', style: TextStyle(color: Colors.white),)
           ),
           ElevatedButton(onPressed: () {
-            updatePoints(10);
+            Navigator.push(context, MaterialPageRoute(
+                builder: (context) => TasksDone(tasks: tasks)));
           }, child: Text('Tasks Done')),
           Container(
             margin: EdgeInsets.fromLTRB(50, 20, 50, 20),
