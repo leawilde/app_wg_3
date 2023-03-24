@@ -21,10 +21,19 @@ class _TasksState extends State<Tasks> {
     Task(description: 'Boden wischen', points: 10),
     Task(description: 'WG Einkauf', points: 5),
   ];
+  List<String> _tasksDone = [];
+
+  @override
+  void initState() {
+    _loadPoints();
+    _loadItems();
+    super.initState();
+  }
 
   @override
   void dispose() {
-    _loadPoints();
+    //_loadPoints();
+    _savePoints();
     super.dispose();
   }
 
@@ -51,8 +60,16 @@ class _TasksState extends State<Tasks> {
           ),
           ElevatedButton(onPressed: () {
             Navigator.push(context, MaterialPageRoute(
-                builder: (context) => TasksDone(tasks: tasks)));
-          }, child: Text('Tasks Done')),
+                builder: (context) => TasksDone(tasksDone: _tasksDone)));
+          }, child: Text('Tasks Done'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.white,
+              foregroundColor: Colors.black,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20)
+              ),
+
+            ),),
           Container(
             margin: EdgeInsets.fromLTRB(50, 20, 50, 20),
             padding: EdgeInsets.all(10),
@@ -90,6 +107,7 @@ class _TasksState extends State<Tasks> {
       onTap: () {
         setState(() {
           _points += task.points;
+          _addItem(task.description);
           _savePoints();
         });
       },
@@ -119,6 +137,35 @@ class _TasksState extends State<Tasks> {
       _points = prefs.getInt('counter') ?? 0;
     });
   }
+
+  Future<void> saveStringList(String key, List<String> list) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setStringList(key, list);
+  }
+
+  Future<List<String>> loadStringList(String key) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getStringList(key) ?? [];
+  }
+
+  Future<void> _saveItems() async {
+    await saveStringList('_tasksDone', _tasksDone);
+  }
+
+  Future<void> _loadItems() async {
+    List<String> loadedItems = await loadStringList('_tasksDone');
+    setState(() {
+      _tasksDone = loadedItems;
+    });
+  }
+
+  void _addItem(String item) {
+    setState(() {
+      _tasksDone.add(item);
+      _saveItems();
+    });
+  }
+
 
 
 }

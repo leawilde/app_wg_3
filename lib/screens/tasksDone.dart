@@ -2,22 +2,28 @@ import 'package:flutter/material.dart';
 import 'package:app_wg_3/task.dart';
 
 class TasksDone extends StatelessWidget {
-  const TasksDone({Key? key, required this.tasks}) : super(key: key);
-  final List<Task> tasks;
+  const TasksDone({Key? key, required this.tasksDone}) : super(key: key);
+  final List<String> tasksDone;
 
 
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
-      backgroundColor: Colors.red,
+      backgroundColor: Colors.red[200],
+      appBar: AppBar(
+        backgroundColor: Colors.black,
+        title: Text('Tasks Done'),
+      ),
       body: ListView.builder(
-          itemCount: tasks.length,
+          itemCount: tasksDone.length,
           itemBuilder: (context, index){
-            return Container(
-              margin: EdgeInsets.fromLTRB(50, 20, 50, 20),
-                padding: EdgeInsets.all(10),
-                child: Text(tasks[index].description,
-                style: TextStyle(color: Colors.black),));
+            return Center(
+              child: Container(
+                margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                  padding: EdgeInsets.all(10),
+                  child: Text(tasksDone[index],
+                  style: const TextStyle(color: Colors.black, fontSize: 26),)),
+            );
       }),
     );
   }
